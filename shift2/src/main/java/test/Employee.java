@@ -1,4 +1,4 @@
-package shift2.src.main.java.test;
+package test;
 
 import java.util.ArrayList;
 import java.util.Arrays;

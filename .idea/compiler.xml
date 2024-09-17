@@ -9,6 +9,9 @@
         <module name="shift2" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="target" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/../Shift-Scheduling-System/shift2/target/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../Shift-Scheduling-System/shift2/target/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/shift2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shift2/src/main/resources" charset="UTF-8" />
   </component>
 </project>

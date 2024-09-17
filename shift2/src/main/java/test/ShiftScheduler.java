@@ -1,4 +1,4 @@
-package shift2.src.main.java.test;
+package test;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;

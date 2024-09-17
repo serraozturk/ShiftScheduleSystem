@@ -1,8 +1,8 @@
 
-package shift2.src.main.java.repository;
+package repository;
 
 
-import shift2.src.main.java.test.Employee;
+import test.Employee;
 
 import java.io.IOException;
 import java.io.InputStream;

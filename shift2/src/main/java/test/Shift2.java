@@ -1,19 +1,16 @@
-package shift2.src.main.java.test;
+package test;
 
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import shift2.src.main.java.repository.databasemanager;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.*;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-
+import repository.databasemanager;
 
 import javax.swing.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 public class Shift2 {
     static final int TOTAL_DAYS = 7;
