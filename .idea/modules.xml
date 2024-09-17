@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../Shift-Scheduling-System/.idea/ShiftScheduleSystem.iml" filepath="$PROJECT_DIR$/../Shift-Scheduling-System/.idea/ShiftScheduleSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/target.iml" filepath="$PROJECT_DIR$/target.iml" />
     </modules>
   </component>
 </project>
