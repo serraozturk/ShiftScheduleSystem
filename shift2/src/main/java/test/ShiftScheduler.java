@@ -2,10 +2,16 @@ package test;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import repository.databasemanager;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.List;
+
 
 public class ShiftScheduler {
     static final int TOTAL_DAYS = 28; // 28 gün
@@ -13,13 +19,13 @@ public class ShiftScheduler {
     static final int NIGHT_SHIFT_DURATION = 5; // Gece vardiyası süresi
     static final int NIGHT_SHIFT_INTERVAL = 5; // Gece vardiyasının sıklığı (5 günde bir değişim)
     static final int OFF_PERIOD_DURATION = 2; // Off dönemi süresi (2 gün)
-    static final int MAX_OFF_PER_DAY = 3; // Günlük maksimum off günü sayısı
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        try{
+        databasemanager.initializeDatabaseConnection();
+        Shift2GUI inputGUI = new Shift2GUI();
+        List<String> employees = inputGUI.getEmployeeNames();
         // Çalışan adları
-        List<String> employees = Arrays.asList("Çalışan 1", "Çalışan 2", "Çalışan 3", "Çalışan 4",
-                "Çalışan 5", "Çalışan 6", "Çalışan 7", "Çalışan 8");
-        // Çalışanları rastgele sıraya koy
 
         // Günlük vardiya programını oluştur
         String[][] schedule = new String[TOTAL_DAYS][NUM_EMPLOYEES];
@@ -94,11 +100,67 @@ public class ShiftScheduler {
             }
 
         }
+        askForSpecialLeave(schedule, employees);
 
         // Excel dosyasına yazdır
         writeScheduleToExcel(schedule, employees);
-    }
 
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            databasemanager.closeDatabaseConnection();
+        }
+
+    }
+    private static void askForSpecialLeave(String[][] schedule, List<String> employees) {
+        // Ask the user how many employees they want to grant special leave to
+        int numEmployees = Integer.parseInt(JOptionPane.showInputDialog(null, "How many employees do you want to grant special leave to?", "Number of Employees", JOptionPane.QUESTION_MESSAGE));
+
+        for (int i = 0; i < numEmployees; i++) {
+            // Create a panel to hold all the components
+            JPanel panel = new JPanel();
+            panel.setLayout(new BorderLayout());
+
+            // Create a combo box to select the employee
+            JComboBox<String> employeeComboBox = new JComboBox<>(employees.toArray(new String[0]));
+            panel.add(employeeComboBox, BorderLayout.NORTH);
+
+            // Create a spinner to select the week
+            SpinnerNumberModel weekModel = new SpinnerNumberModel(1, 1, TOTAL_DAYS / 7, 1);
+            JSpinner weekSpinner = new JSpinner(weekModel);
+            panel.add(weekSpinner, BorderLayout.CENTER);
+
+            // Create a panel to hold the day checkboxes
+            String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+            JCheckBox[] dayCheckBoxes = new JCheckBox[7];
+            JPanel dayPanel = new JPanel();
+            dayPanel.setLayout(new GridLayout(7, 1));
+            for (int j = 0; j < 7; j++) {
+                dayCheckBoxes[j] = new JCheckBox(days[j]);
+                dayPanel.add(dayCheckBoxes[j]);
+            }
+            panel.add(dayPanel, BorderLayout.SOUTH);
+
+            // Show the dialog
+            int result = JOptionPane.showConfirmDialog(null, panel, "Grant Special Leave to Employee " + (i + 1), JOptionPane.OK_CANCEL_OPTION);
+
+            if (result == JOptionPane.OK_OPTION) {
+                // Get the selected employee, week, and days
+                String employee = (String) employeeComboBox.getSelectedItem();
+                int selectedWeek = (int) weekSpinner.getValue();
+                int employeeIndex = employees.indexOf(employee);
+                int weekStart = (selectedWeek - 1) * 7;
+
+                // Grant the special leave to the selected employee for the selected days
+                for (int day = 0; day < 7; day++) {
+                    if (dayCheckBoxes[day].isSelected() && weekStart + day < TOTAL_DAYS) {
+                        schedule[weekStart + day][employeeIndex] = "İZİNLİ";
+                    }
+                }
+            }
+        }
+    }
     private static void ensureNightShiftOffDays(String[][] schedule) {
         for (int emp = 0; emp < NUM_EMPLOYEES; emp++) {
             int lastNightShiftDay = -1;
@@ -276,6 +338,8 @@ public class ShiftScheduler {
             // Boş satır ekleyerek tablolara ayırma
             rowIndex++;
         }
+
+
 
         // Excel dosyasını kaydet
         try (FileOutputStream fileOut = new FileOutputStream("ShiftSchedule.xlsx")) {
